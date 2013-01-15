@@ -9,7 +9,7 @@ class ImageOptim
       # Create progressive JPEG file (defaults to true)
       attr_reader :progressive
 
-      # Use jpegrescan, ignore copy_chunks and progressive options (defaults to true)
+      # Use jpegtran through jpegrescan, ignore copy_chunks and progressive options (defaults to true)
       attr_reader :jpegrescan
 
       def optimize(src, dst)
