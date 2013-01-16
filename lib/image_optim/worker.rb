@@ -63,8 +63,8 @@ class ImageOptim
 
       Process.wait(fork do
         ENV['PATH'] = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
-        $stdout.reopen('/dev/null', 'w')
-        $stderr.reopen('/dev/null', 'w')
+        $stdout.reopen('/dev/null')
+        $stderr.reopen('/dev/null')
         Process.setpriority(Process::PRIO_PROCESS, 0, @image_optim.nice)
         exec command
       end)
