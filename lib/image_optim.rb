@@ -175,9 +175,9 @@ class ImageOptim
           symlink.make_symlink(File.expand_path(path))
           at_exit{ symlink.unlink }
 
-          @resolved_bins[bin] = system(*%W[which -s #{symlink}])
+          @resolved_bins[bin] = system(*%W[which #{symlink}])
         else
-          @resolved_bins[bin] = system(*%W[which -s #{bin}])
+          @resolved_bins[bin] = system(*%W[which #{bin}])
         end
       end
     end
