@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'shellwords'
+
 require 'image_optim'
 
 class ImageOptim
@@ -59,15 +60,10 @@ class ImageOptim
       resolve_bin!(bin)
 
       command = [bin, *arguments].map(&:to_s).shelljoin
+      env_path = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
       start = Time.now
 
-      Process.wait(fork do
-        ENV['PATH'] = "#{@image_optim.resolve_dir}:#{ENV['PATH']}"
-        $stdout.reopen('/dev/null')
-        $stderr.reopen('/dev/null')
-        Process.setpriority(Process::PRIO_PROCESS, 0, @image_optim.nice)
-        exec command
-      end)
+      system "env PATH=#{env_path.shellescape} nice -n #{@image_optim.nice} #{command} >& /dev/null"
 
       raise SignalException.new($?.termsig) if $?.signaled?
 

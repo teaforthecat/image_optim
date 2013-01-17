@@ -1,11 +1,11 @@
 require 'in_threads'
 require 'shellwords'
 
-class ImageOptim
-  autoload :ImagePath, 'image_optim/image_path'
-  autoload :OptionHelpers, 'image_optim/option_helpers'
-  autoload :Worker, 'image_optim/worker'
+require 'image_optim/image_path'
+require 'image_optim/option_helpers'
+require 'image_optim/worker'
 
+class ImageOptim
   class ConfigurationError < StandardError; end
   class BinNotFoundError < StandardError; end
 
@@ -175,9 +175,9 @@ class ImageOptim
           symlink.make_symlink(File.expand_path(path))
           at_exit{ symlink.unlink }
 
-          @resolved_bins[bin] = system(*%W[which #{symlink}])
+          @resolved_bins[bin] = bin_accessible?(symlink)
         else
-          @resolved_bins[bin] = system(*%W[which #{bin}])
+          @resolved_bins[bin] = bin_accessible?(bin)
         end
       end
     end
@@ -206,6 +206,11 @@ private
     else
       array
     end
+  end
+
+  # Check if bin can be accessed
+  def bin_accessible?(bin)
+    `which #{bin.to_s.shellescape}` != ''
   end
 
   # http://stackoverflow.com/questions/891537/ruby-detect-number-of-cpus-installed
